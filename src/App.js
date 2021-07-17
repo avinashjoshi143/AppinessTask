@@ -1,25 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import LoginPage from './pages/loginpage/loginpage.component';
+import {Route,Switch,Redirect} from 'react-router-dom';
+import { createStructuredSelector } from 'reselect';
+import {connect} from 'react-redux';
+import { selectCurrentUser } from './redux/userreducer/user.selector';
+import ListPage  from './pages/listpage/listpage.component';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = ({currentUser})=> {
+
+    return (
+      <div className="App">
+            <Switch>
+            <Route exact path='/' render = {()=> currentUser ? <Redirect to ="/list" /> : <LoginPage /> } />
+            <Route exact path='/list' render={()=> currentUser ? <ListPage /> : <Redirect to="/" /> } />
+            </Switch>
+      </div>
+    );
 }
 
-export default App;
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser
+});
+
+export default connect(mapStateToProps)(App);
